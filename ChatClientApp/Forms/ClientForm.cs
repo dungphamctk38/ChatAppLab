@@ -17,24 +17,24 @@ namespace ChatClientApp.Forms
         {
             InitializeComponent();
 
-            sendButton.Enabled = false;
+            btnSend.Enabled = false;
 
-            connectButton.Click += ConnectButton_Click;
-            sendButton.Click += SendButton_Click;
-            clearButton.Click += ClearButton_Click;
+            btnConnect.Click += ConnectButton_Click;
+            btnSend.Click += SendButton_Click;
+            btnClear.Click += ClearButton_Click;
             FormClosing += ClientForm_FormClosing;
         }
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            string host = hostTextBox.Text.Trim();
+            string host = txtHost.Text.Trim();
             if (host == string.Empty)
             {
                 MessageBox.Show("Host khong hop le.");
                 return;
             }
 
-            if (!int.TryParse(portTextBox.Text.Trim(), out int port))
+            if (!int.TryParse(txtPort.Text.Trim(), out int port))
             {
                 MessageBox.Show("Port khong hop le.");
                 return;
@@ -42,11 +42,11 @@ namespace ChatClientApp.Forms
 
             CloseConnection();
 
-            connectButton.Enabled = false;
-            hostTextBox.Enabled = false;
-            portTextBox.Enabled = false;
-            sendButton.Enabled = false;
-            statusLabel.Text = "Connecting...";
+            btnConnect.Enabled = false;
+            txtHost.Enabled = false;
+            txtPort.Enabled = false;
+            btnSend.Enabled = false;
+            lblStatus.Text = "Connecting...";
 
             Thread clientThread = new Thread(() => ConnectToServer(host, port));
             clientThread.IsBackground = true;
@@ -67,9 +67,9 @@ namespace ChatClientApp.Forms
 
                 RunOnUiThread(() =>
                 {
-                    statusLabel.Text = "Connected to server.";
-                    sendButton.Enabled = true;
-                    messageTextBox.Focus();
+                    lblStatus.Text = "Connected to server.";
+                    btnSend.Enabled = true;
+                    txtMessage.Focus();
                     AddLog("[Status] Da ket noi toi server.");
                 });
 
@@ -122,7 +122,7 @@ namespace ChatClientApp.Forms
                 return;
             }
 
-            string text = messageTextBox.Text.Trim();
+            string text = txtMessage.Text.Trim();
             if (text == string.Empty)
             {
                 return;
@@ -132,8 +132,8 @@ namespace ChatClientApp.Forms
             {
                 writer.WriteLine(text);
                 AddLog("Client: " + text);
-                messageTextBox.Clear();
-                messageTextBox.Focus();
+                txtMessage.Clear();
+                txtMessage.Focus();
             }
             catch
             {
@@ -144,7 +144,7 @@ namespace ChatClientApp.Forms
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
-            logTextBox.Clear();
+            txtLog.Clear();
         }
 
         private void ClientForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -155,11 +155,11 @@ namespace ChatClientApp.Forms
         private void ResetUi()
         {
             CloseConnection();
-            connectButton.Enabled = true;
-            hostTextBox.Enabled = true;
-            portTextBox.Enabled = true;
-            sendButton.Enabled = false;
-            statusLabel.Text = "Client is idle...";
+            btnConnect.Enabled = true;
+            txtHost.Enabled = true;
+            txtPort.Enabled = true;
+            btnSend.Enabled = false;
+            lblStatus.Text = "Client is idle...";
         }
 
         private void CloseConnection()
@@ -185,7 +185,7 @@ namespace ChatClientApp.Forms
 
         private void AddLog(string text)
         {
-            logTextBox.AppendText(text + Environment.NewLine);
+            txtLog.AppendText(text + Environment.NewLine);
         }
 
         private void RunOnUiThread(Action action)

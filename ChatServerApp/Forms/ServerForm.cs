@@ -19,17 +19,17 @@ namespace ChatServerApp.Forms
         {
             InitializeComponent();
 
-            sendButton.Enabled = false;
+            btnSend.Enabled = false;
 
-            startButton.Click += StartButton_Click;
-            sendButton.Click += SendButton_Click;
-            clearButton.Click += ClearButton_Click;
+            btnStart.Click += StartButton_Click;
+            btnSend.Click += SendButton_Click;
+            btnClear.Click += ClearButton_Click;
             FormClosing += ServerForm_FormClosing;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(portTextBox.Text.Trim(), out int port))
+            if (!int.TryParse(txtPort.Text.Trim(), out int port))
             {
                 MessageBox.Show("Port khong hop le.");
                 return;
@@ -37,10 +37,10 @@ namespace ChatServerApp.Forms
 
             CloseConnection();
 
-            startButton.Enabled = false;
-            portTextBox.Enabled = false;
-            sendButton.Enabled = false;
-            statusLabel.Text = "Waiting for client...";
+            btnStart.Enabled = false;
+            txtPort.Enabled = false;
+            btnSend.Enabled = false;
+            lblStatus.Text = "Waiting for client...";
             AddLog("[Status] Dang cho client ket noi...");
 
             Thread serverThread = new Thread(() => WaitForClient(port));
@@ -64,9 +64,9 @@ namespace ChatServerApp.Forms
 
                 RunOnUiThread(() =>
                 {
-                    statusLabel.Text = "Client connected.";
-                    sendButton.Enabled = true;
-                    messageTextBox.Focus();
+                    lblStatus.Text = "Client connected.";
+                    btnSend.Enabled = true;
+                    txtMessage.Focus();
                     AddLog("[Status] Client da ket noi.");
                 });
 
@@ -119,7 +119,7 @@ namespace ChatServerApp.Forms
                 return;
             }
 
-            string text = messageTextBox.Text.Trim();
+            string text = txtMessage.Text.Trim();
             if (text == string.Empty)
             {
                 return;
@@ -129,8 +129,8 @@ namespace ChatServerApp.Forms
             {
                 writer.WriteLine(text);
                 AddLog("Server: " + text);
-                messageTextBox.Clear();
-                messageTextBox.Focus();
+                txtMessage.Clear();
+                txtMessage.Focus();
             }
             catch
             {
@@ -141,7 +141,7 @@ namespace ChatServerApp.Forms
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
-            logTextBox.Clear();
+            txtLog.Clear();
         }
 
         private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -152,10 +152,10 @@ namespace ChatServerApp.Forms
         private void ResetUi()
         {
             CloseConnection();
-            startButton.Enabled = true;
-            portTextBox.Enabled = true;
-            sendButton.Enabled = false;
-            statusLabel.Text = "Server is idle...";
+            btnStart.Enabled = true;
+            txtPort.Enabled = true;
+            btnSend.Enabled = false;
+            lblStatus.Text = "Server is idle...";
         }
 
         private void CloseConnection()
@@ -187,7 +187,7 @@ namespace ChatServerApp.Forms
 
         private void AddLog(string text)
         {
-            logTextBox.AppendText(text + Environment.NewLine);
+            txtLog.AppendText(text + Environment.NewLine);
         }
 
         private void RunOnUiThread(Action action)
